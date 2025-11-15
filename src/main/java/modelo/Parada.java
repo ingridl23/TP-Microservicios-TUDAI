@@ -17,8 +17,9 @@ public class Parada {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToMany(mappedBy="Parada")
+	@OneToMany(mappedBy = "parada")
 	private List<Monopatin> monopatines;
+
 	@Column(name="latitud")
 	private double latitud;
 	@Column(name="longitud")

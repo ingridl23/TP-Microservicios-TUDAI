@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import modelo.Monopatin;
 import modelo.Parada;
 import repositorio.ParadaRepository;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -54,4 +56,6 @@ public class ParadaService {
         Parada existing = findById(id);
         repository.delete(existing);
     }
+    
+   
 }

@@ -69,4 +69,14 @@ public class MonopatinController {
     ) {
         return service.monopatinesCercanos(lat, lon);
     }
+    
+    @GetMapping("/mantenimiento")
+    public int mantenimiento() {
+        return service.countMantenimiento();
+    }
+
+    @GetMapping("/disponibles")
+    public int disponibles() {
+        return service.countDisponibles();
+    }
 }

@@ -8,6 +8,7 @@ import modelo.Monopatin;
 import repositorio.MonopatinRepository;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -113,4 +114,36 @@ public class MonopatinService {
         double dy = lon1 - lon2;
         return Math.sqrt(dx*dx + dy*dy);
     }
+    
+    
+    public int countMantenimiento() {
+        List<Monopatin> monopatines = repository.findAll();
+        
+        int count = 0;
+        Iterator<Monopatin> it = monopatines.iterator();
+
+        while (it.hasNext()) {
+            Monopatin m = it.next();
+            if (m.isMantenimiento()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int countDisponibles() {
+        List<Monopatin> monopatines = repository.findAll();
+
+        int count = 0;
+
+        for (Monopatin m : monopatines) {
+            if (!m.isMantenimiento() && m.isActivo()) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    
 }
