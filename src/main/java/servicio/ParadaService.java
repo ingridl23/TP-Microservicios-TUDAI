@@ -8,7 +8,6 @@ import modelo.Monopatin;
 import modelo.Parada;
 import repositorio.ParadaRepository;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -56,6 +55,19 @@ public class ParadaService {
         Parada existing = findById(id);
         repository.delete(existing);
     }
+
+	public Boolean getMonopatinByParada(Long id, Long idMonopatin) {
+		Parada elegida = repository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Parada no encontrada"));
+		if(elegida.tieneMonopatin(idMonopatin)) {
+			return true;
+		}
+		return false;
+	}
+
+	public List<Monopatin> getMonopatines(Long id) {
+		Parada elegida = repository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Parada no encontrada"));
+		return elegida.getMonopatines();
+	}
     
    
 }

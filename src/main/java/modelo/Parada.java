@@ -58,7 +58,13 @@ public class Parada {
 	public void setId(Long id) {
 		this.id = id;	
 	}
-	
-	
+	public boolean tieneMonopatin(Long id) {
+		for (Monopatin monopatin : monopatines) {
+			  if(monopatin.getId() == id) {
+				  return true;
+			  }
+			}
+		return false;
+	}
 	
 }

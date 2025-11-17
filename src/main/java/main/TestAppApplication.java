@@ -1,5 +1,4 @@
-package ar.edu.cresta.test_app;
-
+package main;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

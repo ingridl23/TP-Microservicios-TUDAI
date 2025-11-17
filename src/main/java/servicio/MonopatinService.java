@@ -8,6 +8,7 @@ import modelo.Monopatin;
 import repositorio.MonopatinRepository;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class MonopatinService {
     	    return repository.save(existing);
     }
     
-    public Monopatin partialUpdate(Long id, Map<String, Object> fields) {
+    public Monopatin cambiarUbicacion(Long id, Map<String, Object> fields) {
         Monopatin m = findById(id);
 
         if (fields.containsKey("latitud")) {
@@ -69,6 +70,22 @@ public class MonopatinService {
 
             m.setLongitud(Double.parseDouble(v.toString()));
         }
+
+        return repository.save(m);
+    }
+    
+    public Monopatin pausarMonopatin(Long id) {
+    	Monopatin m = findById(id);
+
+        m.setActivo(false);
+
+        return repository.save(m);
+    }
+    
+    public Monopatin reanudarMonopatin(Long id) {
+    	Monopatin m = findById(id);
+
+        m.setActivo(true);
 
         return repository.save(m);
     }
@@ -144,6 +161,27 @@ public class MonopatinService {
         }
         return count;
     }
+
+	public Monopatin sumarkm(Long id, double km) {
+	    if (km < 0) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Los km deben ser positivos");
+	    }
+
+	    Monopatin m = findById(id);
+	    m.setKilometros(m.getKilometros() + km);
+	    return repository.save(m);
+	}
+
+	public Map<String, Long> countEstado() {
+		long enOperacion = this.countDisponibles();
+	    long enMantenimiento = this.countMantenimiento();
+
+	    Map<String, Long> resultado = new HashMap<>();
+	    resultado.put("Monopatines En operacion", enOperacion);
+	    resultado.put("Monopatines En mantenimiento", enMantenimiento);
+
+	    return resultado;
+	}
     
     
 }
