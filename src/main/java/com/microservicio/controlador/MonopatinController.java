@@ -53,7 +53,7 @@ public class MonopatinController {
         return ResponseEntity.created(URI.create("/monopatines/" + created.getId())).body(created);
     }
 
-    @Operation(summary="Actualiza los datos de un monopatin")
+    @Operation(summary="Modifica los datos de un monopatin")
     @PutMapping("/{id}")
     public Monopatin update(
     		@Parameter(description = "ID del monopatin a actualizar") 

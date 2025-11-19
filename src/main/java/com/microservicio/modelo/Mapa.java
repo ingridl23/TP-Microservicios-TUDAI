@@ -17,7 +17,7 @@ public class Mapa {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToMany(mappedBy="Mapa")
+	@OneToMany
 	private List<Parada> paradas;
 
 	public Mapa() {

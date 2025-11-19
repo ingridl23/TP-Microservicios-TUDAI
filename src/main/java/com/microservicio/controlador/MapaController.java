@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.microservicio.modelo.Mapa;
 import com.microservicio.servicio.MapaService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 @RestController
 @RequestMapping("/mapas")
 public class MapaController {
@@ -25,7 +25,7 @@ public class MapaController {
     public MapaController(MapaService service) {
         this.service = service;
     }
-    @Operation(summary = "Listar todos los mapas")
+    @Operation(summary = "Lista todos los mapas")
     @GetMapping
     public List<Mapa> getAll() {
         return service.findAll();
@@ -33,11 +33,12 @@ public class MapaController {
 
     @Operation(summary = "Buscar un mapa por ID")
     @GetMapping("/{id}")
-    public Mapa getById(@PathVariable Long id) {
+    public Mapa getById(@Parameter(description = "ID del mapa") 
+    					@PathVariable Long id) {
         return service.findById(id);
     }
 
-    @Operation(summary = "Buscar un mapa por ID")
+    @Operation(summary = "Crea un nuevo mapa")
     @PostMapping
     public ResponseEntity<Mapa> create(@RequestBody Mapa m) {
         Mapa created = service.create(m);
@@ -45,12 +46,14 @@ public class MapaController {
     }
     @Operation(summary = "Actualizar un mapa por ID")
     @PutMapping("/{id}")
-    public Mapa update(@PathVariable Long id, @RequestBody Mapa m) {
+    public Mapa update(@Parameter(description = "ID del mapa")
+    				   @PathVariable Long id, @RequestBody Mapa m) {
         return service.update(id, m);
     }
     @Operation(summary = "Eliminar un mapa")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@Parameter(description = "ID del mapa")
+    								   @PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
