@@ -17,8 +17,8 @@ public class Parada {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToMany(mappedBy = "parada")
-	private List<Monopatin> monopatines;
+	
+	
 
 	@Column(name="latitud")
 	private double latitud;
@@ -27,19 +27,13 @@ public class Parada {
 	
 	public Parada() {
 	}
-	public Parada(List<Monopatin> monopatines, double latitud, double longitud) {
+	public Parada(double latitud, double longitud) {
 		super();
-		this.monopatines = monopatines;
 		this.latitud = latitud;
 		this.longitud = longitud;
 	}
 	
-	public List<Monopatin> getMonopatines() {
-		return new ArrayList<Monopatin>(monopatines);
-	}
-	public void setMonopatines(List<Monopatin> monopatines) {
-		this.monopatines = monopatines;
-	}
+	
 	public double getLatitud() {
 		return latitud;
 	}
@@ -58,7 +52,7 @@ public class Parada {
 	public void setId(Long id) {
 		this.id = id;	
 	}
-	public boolean tieneMonopatin(Long id) {
+/*	public boolean tieneMonopatin(Long id) {
 		for (Monopatin monopatin : monopatines) {
 			  if(monopatin.getId() == id) {
 				  return true;
@@ -66,5 +60,5 @@ public class Parada {
 			}
 		return false;
 	}
-	
+	*/
 }

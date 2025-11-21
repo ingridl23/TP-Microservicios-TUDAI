@@ -21,6 +21,7 @@ import com.microservicio.servicio.ParadaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/paradas")
@@ -50,7 +51,7 @@ public class ParadaController {
     @Operation(summary="Crea una nueva parada")
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ParadaDTO> create(@RequestBody ParadaDTO p) {
+    public ResponseEntity<ParadaDTO> create(@Valid @RequestBody ParadaDTO p) {
     	ParadaDTO createdDto = service.create(p);
         return ResponseEntity.created(URI.create("/paradas/" + createdDto.getId())).body(createdDto);
     }
@@ -59,7 +60,7 @@ public class ParadaController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ParadaDTO update(@Parameter(description = "ID de la Parada a modificar")@PathVariable Long id, 
-    					@RequestBody ParadaDTO p) {
+    		@Valid	@RequestBody ParadaDTO p) {
         return service.update(id, p);
     }
     
@@ -67,9 +68,15 @@ public class ParadaController {
     @GetMapping("/{id}/monopatines")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public List<MonopatinDTO> getMonopatinesEnParada(@Parameter(description = "ID de la Parada")@PathVariable Long id) {
-        return service.getMonopatines(id);
+        return service.getMonopatinesPorRest(id);
     }
 
+    
+ 
+
+    
+    
+    
     @Operation(summary="Elimina una parada")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
@@ -81,8 +88,9 @@ public class ParadaController {
     @Operation(summary="Corrobora si en una parada especifica se encuentra un monopatin en especifico")
     @GetMapping("/{id}/monopatin/{idMonopatin}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public Boolean hayMonopatinEnParada(@Parameter(description = "ID de la Parada")@PathVariable Long id,
-    									@Parameter(description = "ID del monopatin")@PathVariable Long idMonopatin) {
-        return service.getMonopatinByParada(id,idMonopatin);
+  
+    public ResponseEntity<Boolean> hayMonopatinEnParada(@PathVariable Long id, @PathVariable Long idMonopatin) {
+        return ResponseEntity.ok(service.getMonopatinByParada(id,idMonopatin));
     }
+
 }

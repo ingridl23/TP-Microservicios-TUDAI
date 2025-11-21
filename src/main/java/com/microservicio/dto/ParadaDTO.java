@@ -7,7 +7,7 @@ public class ParadaDTO {
 	private Long id;
     private double latitud;
     private double longitud;
-    //Guardo una lista de ids, no de objetos
+    //Guardo una lista de ids, no de objetos monopatines
     private List<Long> monopatinesId;
 
     public ParadaDTO() {

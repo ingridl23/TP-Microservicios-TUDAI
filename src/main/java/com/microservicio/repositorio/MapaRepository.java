@@ -7,4 +7,5 @@ import com.microservicio.modelo.Mapa;
 
 
 public interface MapaRepository extends JpaRepository<Mapa, Long> {
+	
 }

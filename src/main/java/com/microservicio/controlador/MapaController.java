@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservicio.dto.MapaDTO;
 import com.microservicio.modelo.Mapa;
 import com.microservicio.servicio.MapaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,39 +33,52 @@ public class MapaController {
     @Operation(summary = "Lista todos los mapas")
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public List<Mapa> getAll() {
+    public List<MapaDTO> getAll() {
         return service.findAll();
     }
-
+    
+    
+    
     @Operation(summary = "Buscar un mapa por ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public Mapa getById(@Parameter(description = "ID del mapa") 
-    					@PathVariable Long id) {
-        return service.findById(id);
+    public ResponseEntity<MapaDTO> getById(
+            @Parameter(description = "ID del mapa") 
+            @PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
-
+    
+    
+    
+    
     @Operation(summary = "Crea un nuevo mapa")
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Mapa> create(@RequestBody Mapa m) {
-        Mapa created = service.create(m);
-        return ResponseEntity.created(URI.create("/mapas/" + created.getId())).body(created);
+    public ResponseEntity<MapaDTO> create(@RequestBody MapaDTO dto) {
+        MapaDTO createdDto = service.create(dto);
+        return ResponseEntity
+                .created(URI.create("/mapas/" + createdDto.getId()))
+                .body(createdDto);
     }
     
     @Operation(summary = "Actualizar un mapa por ID")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public Mapa update(@Parameter(description = "ID del mapa")
-    				   @PathVariable Long id, @RequestBody Mapa m) {
-        return service.update(id, m);
+    public ResponseEntity<MapaDTO> update(
+            @Parameter(description = "ID del mapa") 
+            @PathVariable Long id, 
+            @RequestBody MapaDTO dto) {
+
+        return ResponseEntity.ok(service.update(id, dto));
     }
     
     @Operation(summary = "Eliminar un mapa")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID del mapa")
-    								   @PathVariable Long id) {
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "ID del mapa") 
+            @PathVariable Long id) {
+
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
