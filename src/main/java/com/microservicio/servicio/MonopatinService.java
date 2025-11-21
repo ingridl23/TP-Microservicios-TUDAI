@@ -1,5 +1,6 @@
 package com.microservicio.servicio;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,59 +9,66 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.microservicio.dto.MonopatinDTO;
 import com.microservicio.modelo.Monopatin;
 import com.microservicio.repositorio.MonopatinRepository;
 
 @Service
 public class MonopatinService {
 
-    private static final HttpStatusCode NOT_FOUND = null;
 	private final MonopatinRepository repository;
 
     public MonopatinService(MonopatinRepository repository) {
         this.repository = repository;
     }
 
-    public List<Monopatin> findAll() {
-        return repository.findAll();
+    public List<MonopatinDTO> findAll() {
+    	List<Monopatin> monopatines = repository.findAll();
+        List<MonopatinDTO> dtos = new ArrayList<>();
+        for (Monopatin m : monopatines) {
+            dtos.add(EntidadaDTO(m));
+        }
+        return dtos;
     }
 
-    public Monopatin findById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Monopatin no encontrado"));
+    public MonopatinDTO findById(Long id) {
+    	Monopatin monopatin = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
+        return EntidadaDTO(monopatin);
     }
 
-    public Monopatin create(Monopatin m) {
-    	m.setId(null);
-        return repository.save(m);
+    public MonopatinDTO create(MonopatinDTO dto) {
+    	Monopatin monopatin = DTOaEntidad(dto);
+    	monopatin.setId(null);
+    	return EntidadaDTO(repository.save(monopatin));
     }
 
-    public Monopatin update(Long id, Monopatin m) {
-    	 Monopatin existing = findById(id);
+    public MonopatinDTO update(Long id, MonopatinDTO dto) {
+    	 Monopatin existing = repository.findById(id)
+    			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
     	
-    	    existing.setParada(m.getParada());
-    	    existing.setActivo(m.isActivo());
-    	    existing.setKilometros(m.getKilometros());
-    	    existing.setMantenimiento(m.isMantenimiento());
-    	    existing.setLatitud(m.getLatitud());
-    	    existing.setLongitud(m.getLongitud());
+    	    existing.setActivo(dto.isActivo());
+    	    existing.setKilometros(dto.getKilometros());
+    	    existing.setMantenimiento(dto.isMantenimiento());
+    	    existing.setLatitud(dto.getLatitud());
+    	    existing.setLongitud(dto.getLongitud());
+            return EntidadaDTO(repository.save(existing));
 
-    	    return repository.save(existing);
     }
     
     public Monopatin cambiarUbicacion(Long id, Map<String, Object> fields) {
-        Monopatin m = findById(id);
+    	 Monopatin existing = repository.findById(id)
+    			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
 
         if (fields.containsKey("latitud")) {
             Object v = fields.get("latitud");
             if (v == null)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "latitud no puede ser nula");
 
-            m.setLatitud(Double.parseDouble(v.toString()));
+            existing.setLatitud(Double.parseDouble(v.toString()));
         }
 
         if (fields.containsKey("longitud")) {
@@ -68,14 +76,15 @@ public class MonopatinService {
             if (v == null)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "longitud no puede ser nula");
 
-            m.setLongitud(Double.parseDouble(v.toString()));
+            existing.setLongitud(Double.parseDouble(v.toString()));
         }
 
-        return repository.save(m);
+        return repository.save(existing);
     }
     
     public Monopatin pausarMonopatin(Long id) {
-    	Monopatin m = findById(id);
+    	Monopatin m = repository.findById(id)
+    			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
 
         m.setActivo(false);
 
@@ -83,7 +92,8 @@ public class MonopatinService {
     }
     
     public Monopatin reanudarMonopatin(Long id) {
-    	Monopatin m = findById(id);
+    	Monopatin m = repository.findById(id)
+   			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
 
         m.setActivo(true);
 
@@ -91,12 +101,14 @@ public class MonopatinService {
     }
 
     public void delete(Long id) {
-        Monopatin existing = findById(id);
+        Monopatin existing = repository.findById(id)
+   			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
         repository.delete(existing);
     }
     
     public Monopatin comenzarMantenimiento(Long id) {
-        Monopatin m = findById(id);
+        Monopatin m = repository.findById(id)
+   			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
 
         m.setMantenimiento(true);
         m.setActivo(false);
@@ -105,7 +117,8 @@ public class MonopatinService {
     }
     
     public Monopatin terminarMantenimiento(Long id) {
-        Monopatin m = findById(id);
+        Monopatin m = repository.findById(id)
+   			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
 
         m.setMantenimiento(false);
         m.setActivo(true);
@@ -167,7 +180,8 @@ public class MonopatinService {
 	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Los km deben ser positivos");
 	    }
 
-	    Monopatin m = findById(id);
+	    Monopatin m = repository.findById(id)
+   			 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el monopatin"));
 	    m.setKilometros(m.getKilometros() + km);
 	    return repository.save(m);
 	}
@@ -181,6 +195,33 @@ public class MonopatinService {
 	    resultado.put("Monopatines En mantenimiento", enMantenimiento);
 
 	    return resultado;
+	}
+
+	private Monopatin DTOaEntidad(MonopatinDTO dto) {
+	    Monopatin monopatin = new Monopatin();
+	    monopatin.setLatitud(dto.getLatitud());
+	    monopatin.setLongitud(dto.getLongitud());
+	    monopatin.setActivo(dto.isActivo());
+	    monopatin.setKilometros(dto.getKilometros());
+	    monopatin.setMantenimiento(dto.isMantenimiento());
+
+        return monopatin;
+	}
+	
+	public MonopatinDTO EntidadaDTO(Monopatin monopatin) {
+		MonopatinDTO dto = new MonopatinDTO();
+        dto.setId(monopatin.getId());
+        dto.setLatitud(monopatin.getLatitud());
+        dto.setLongitud(monopatin.getLongitud());
+        dto.setActivo(monopatin.isActivo());
+        dto.setKilometros(monopatin.getKilometros());
+        dto.setMantenimiento(monopatin.isMantenimiento());
+
+        if (monopatin.getParada() != null) {
+            dto.setParadaId(monopatin.getParada().getId());
+        }
+
+        return dto;
 	}
     
     
