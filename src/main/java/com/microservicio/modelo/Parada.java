@@ -1,14 +1,10 @@
 package com.microservicio.modelo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,10 +12,7 @@ import jakarta.persistence.Table;
 public class Parada {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	
-
+	private Long id;	
 	@Column(name="latitud")
 	private double latitud;
 	@Column(name="longitud")
@@ -52,13 +45,4 @@ public class Parada {
 	public void setId(Long id) {
 		this.id = id;	
 	}
-/*	public boolean tieneMonopatin(Long id) {
-		for (Monopatin monopatin : monopatines) {
-			  if(monopatin.getId() == id) {
-				  return true;
-			  }
-			}
-		return false;
-	}
-	*/
 }

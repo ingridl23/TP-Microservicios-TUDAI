@@ -6,11 +6,13 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.*;
+
 
 import com.microservicio.dto.MonopatinDTO;
 import com.microservicio.dto.ParadaDTO;
@@ -68,18 +70,40 @@ public class ParadaService {
     }
 
     public List<MonopatinDTO> getMonopatinesPorRest(Long idParada) {
-    	String url = MONOPATINES_URL + idParada;
+        String url = MONOPATINES_URL + idParada;
 
-        MonopatinDTO[] response = restTemplate.getForObject(url, MonopatinDTO[].class);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String token = null;
+
+        if (auth != null && auth.getCredentials() != null) {
+            token = auth.getCredentials().toString();
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        if (token != null) {
+            headers.set("Authorization", "Bearer " + token);
+        }
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);;
+        ResponseEntity<MonopatinDTO[]> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                MonopatinDTO[].class
+        );
+
+        MonopatinDTO[] body = response.getBody();
 
         List<MonopatinDTO> lista = new ArrayList<>();
-        if (response != null) {
-            for (MonopatinDTO m : response) {
+        if (body != null) {
+            for (MonopatinDTO m : body) {
                 lista.add(m);
             }
         }
+
         return lista;
     }
+
 
     public boolean getMonopatinByParada(Long idParada, Long idMonopatin) {
         return getMonopatinesPorRest(idParada).stream()
@@ -104,6 +128,7 @@ public class ParadaService {
             return new RestTemplate();
         }
     }
+      
 }
 
 	 

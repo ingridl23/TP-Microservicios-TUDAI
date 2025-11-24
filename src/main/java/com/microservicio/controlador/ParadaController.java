@@ -44,7 +44,7 @@ public class ParadaController {
     @Operation(summary="Obtiene una parada especifica")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    public ParadaDTO getById(@Parameter(description = "ID de la Parada a buscar")@PathVariable Long id) {
+    public ParadaDTO getById(@Parameter(description = "ID de la Parada a buscar")@PathVariable("id") Long id) {
         return service.findById(id);
     }
     
@@ -59,7 +59,7 @@ public class ParadaController {
     @Operation(summary="Modifica los datos de una parada")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ParadaDTO update(@Parameter(description = "ID de la Parada a modificar")@PathVariable Long id, 
+    public ParadaDTO update(@Parameter(description = "ID de la Parada a modificar")@PathVariable("id") Long id, 
     		@Valid	@RequestBody ParadaDTO p) {
         return service.update(id, p);
     }
@@ -67,20 +67,15 @@ public class ParadaController {
     @Operation(summary="Obtiene todos los monopatines de una parada")
     @GetMapping("/{id}/monopatines")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public List<MonopatinDTO> getMonopatinesEnParada(@Parameter(description = "ID de la Parada")@PathVariable Long id) {
+    public List<MonopatinDTO> getMonopatinesEnParada(@Parameter(description = "ID de la Parada")@PathVariable("id") Long id) {
         return service.getMonopatinesPorRest(id);
     }
-
-    
  
-
-    
-    
     
     @Operation(summary="Elimina una parada")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Void> delete(@Parameter(description = "ID de la Parada a eliminar")@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@Parameter(description = "ID de la Parada a eliminar")@PathVariable("id") Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -89,7 +84,7 @@ public class ParadaController {
     @GetMapping("/{id}/monopatin/{idMonopatin}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
   
-    public ResponseEntity<Boolean> hayMonopatinEnParada(@PathVariable Long id, @PathVariable Long idMonopatin) {
+    public ResponseEntity<Boolean> hayMonopatinEnParada(@PathVariable("id") Long id, @PathVariable("idMonopatin")Long idMonopatin) {
         return ResponseEntity.ok(service.getMonopatinByParada(id,idMonopatin));
     }
 
