@@ -3,15 +3,9 @@ package com.microservicio.servicio;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.*;
 
 
 import com.microservicio.dto.MonopatinDTO;
@@ -24,19 +18,21 @@ import com.microservicio.repositorio.ParadaRepository;
 public class ParadaService {
 
     private final ParadaRepository repository;
-    private final RestTemplate restTemplate;
-    private static final String MONOPATINES_URL = "http://localhost:8081/monopatines?paradaId=";/*Extraer la URL del microservicio en una constante para evitar hardcodeo:*/
 
-    public ParadaService(ParadaRepository repository, RestTemplate restTemplate) {
+    public ParadaService(ParadaRepository repository) {
         this.repository = repository;
-        this.restTemplate = restTemplate;
     }
 
     public List<ParadaDTO> findAll() {
-        List<Parada> paradas = repository.findAll();
-        return paradas.stream()
-                .map(this::convertToDTO)
-                .toList();
+    	List<Parada> paradas = repository.findAll();
+        List<ParadaDTO> dtos = new ArrayList<>();
+
+        for (Parada parada : paradas) {
+            ParadaDTO dto = convertToDTO(parada);
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 
     public ParadaDTO findById(Long id) {
@@ -70,30 +66,9 @@ public class ParadaService {
     }
 
     public List<MonopatinDTO> getMonopatinesPorRest(Long idParada) {
-        String url = MONOPATINES_URL + idParada;
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String token = null;
-
-        if (auth != null && auth.getCredentials() != null) {
-            token = auth.getCredentials().toString();
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        if (token != null) {
-            headers.set("Authorization", "Bearer " + token);
-        }
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);;
-        ResponseEntity<MonopatinDTO[]> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                MonopatinDTO[].class
-        );
-
-        MonopatinDTO[] body = response.getBody();
-
+        //llamo a rest parada para pedir la lista en vez de hacerlo acá
+    		RestParada r = new RestParada();
+    		MonopatinDTO[] body = r.PedidoRest(idParada);
         List<MonopatinDTO> lista = new ArrayList<>();
         if (body != null) {
             for (MonopatinDTO m : body) {
@@ -106,8 +81,15 @@ public class ParadaService {
 
 
     public boolean getMonopatinByParada(Long idParada, Long idMonopatin) {
-        return getMonopatinesPorRest(idParada).stream()
-                .anyMatch(m -> m.getId().equals(idMonopatin));
+    	List<MonopatinDTO> monopatines = getMonopatinesPorRest(idParada);
+
+        for (MonopatinDTO m : monopatines) {
+            if (m.getId().equals(idMonopatin)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private ParadaDTO convertToDTO(Parada parada) {
@@ -121,13 +103,7 @@ public class ParadaService {
         return parada;
     }
 
-    @Configuration
-    public static class RestTemplateConfig {
-        @Bean
-        public RestTemplate restTemplate() {
-            return new RestTemplate();
-        }
-    }
+   
       
 }
 
