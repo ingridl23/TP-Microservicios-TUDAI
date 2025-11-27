@@ -13,6 +13,7 @@ En este microservicio lo que hicimos fue realizar las funcionalidades de Parada 
 ![WhatsApp Image 2025-11-26 at 11 14 01](https://github.com/user-attachments/assets/a3afdad9-3b6e-43ac-877b-0205e03fcaae)
 
 ## ENDPOINTS : Microservicio de Parada-Mapa
+http://localhost:8080/swagger-ui/index.html#/
 
 ### PARADA
 
