@@ -3,12 +3,12 @@ package com.microservicio.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "mapa")
@@ -21,10 +21,15 @@ public class Mapa {
     // Guarda solo ids de paradas
     @ElementCollection
     private List<Long> paradasId = new ArrayList<>();
+    
+    @Column(name = "nombre")
+    private String nombre;
 
     public Long getId() { return id; }
     public List<Long> getParadasId() { return paradasId; }
     public void setParadasId(List<Long> paradasId) { this.paradasId = paradasId; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 }
 
 
