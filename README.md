@@ -50,14 +50,27 @@ En este microservicio lo que hicimos fue realizar las funcionalidades de Parada 
 - Obtiene el mapa con la id
 **PERMITIDO:**  ('ROLE_ADMIN')
 
+##### GET `("{idMapa}/paradas")`
+- Lista las paradas de un mapa 
+**PERMITIDO:** ('ROLE_USER','ROLE_ADMIN')
+
 ##### POST
 - Crea un mapa
 **PERMITIDO:** ('ROLE_ADMIN')
 
-##### PUTMAPPING `("/{id}")`
+##### PUT MAPPING `("/{id}")`
 - Modifica los datos de un mapa  
+**PERMITIDO:** ('ROLE_ADMIN')
+
+##### PATCH MAPPING `("/{idMapa}/paradas/{idParada}")`
+- Agrega una parada a un mapa 
+**PERMITIDO:** ('ROLE_ADMIN')
+
+##### DELETEMAPPING `("/{idMapa}/paradas/{idParada}")`
+- Quita una parada de un mapa
 **PERMITIDO:** ('ROLE_ADMIN')
 
 ##### DELETEMAPPING `("/{id}")`
 - Borra el mapa con la id  
 **PERMITIDO:** ('ROLE_ADMIN')
+
