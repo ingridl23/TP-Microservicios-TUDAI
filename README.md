@@ -1,4 +1,5 @@
 # TP-Microservicios-TUDAI
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/46d963ae-f6ba-42c0-b369-c0088ff6b73f" />
 
 
 En este microservicio lo que hicimos fue realizar las funcionalidades de Parada y Mapa, usamos un repositorio, un controller,un servicio , también implementamos el uso de un controller y de JWT. 
